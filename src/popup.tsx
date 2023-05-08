@@ -11,11 +11,11 @@ function saveOptions(): void {
       console.log("OpenAI API key saved.");
   });
 
-  // Get the value of checkbox with id twitter, zhihu:
+  // Get the value of checkbox with id twitter, coinbase:
   const twitter_val: boolean = (document.getElementById('twitter') as HTMLInputElement).checked;
-  const zhihu_val: boolean = (document.getElementById('zhihu') as HTMLInputElement).checked;
-  chrome.storage.sync.set({ "twitter": twitter_val, "zhihu": zhihu_val }).then(() => {
-      console.log("Twitter: " + twitter_val + ", Zhihu: " + zhihu_val);
+  const coinbase_val: boolean = (document.getElementById('coinbase') as HTMLInputElement).checked;
+  chrome.storage.sync.set({ "twitter": twitter_val, "coinbase": coinbase_val }).then(() => {
+      console.log("Twitter: " + twitter_val + ", coinbase: " + coinbase_val);
   });
 }
 
@@ -42,16 +42,16 @@ window.addEventListener('load', function (): void {
       
   });
 
-  // Get the value of twitter, zhihu from storage and set it to the checkbox
-  chrome.storage.sync.get(["twitter", "zhihu"]).then((result: { [key: string]: any }) => {
+  // Get the value of twitter, coinbase from storage and set it to the checkbox
+  chrome.storage.sync.get(["twitter", "coinbase"]).then((result: { [key: string]: any }) => {
       if (result.twitter == null) {
           result.twitter = true;
       }
-      if (result.zhihu == null) {
-          result.zhihu = true;
+      if (result.coinbase == null) {
+          result.coinbase = true;
       }
       (document.getElementById('twitter') as HTMLInputElement).checked = result.twitter;
-      (document.getElementById('zhihu') as HTMLInputElement).checked = result.zhihu;
+      (document.getElementById('coinbase') as HTMLInputElement).checked = result.coinbase;
   });
 
   document.getElementById('save-button')!.addEventListener('click', saveOptions);

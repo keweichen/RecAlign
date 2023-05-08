@@ -12,7 +12,7 @@
   },
   "content_scripts": [
       {
-        "matches": ["https://twitter.com/*", "https://www.twitter.com/*", "https://zhihu.com/*", "https://www.zhihu.com/*"],
+        "matches": ["https://twitter.com/*", "https://www.twitter.com/*", "https://coinbase.com/*", "https://www.coinbase.com/*"],
         "js": ["js/content_script.js"]
       }
   ],

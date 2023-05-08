@@ -104,47 +104,49 @@ function clean_twitter(): void {
   });
 }
 
-function clean_zhihu(): void {
-  // Check whether zhihu is enabled
-  chrome.storage.sync.get(["zhihu"]).then((result: any) => {
-    if (result.zhihu == null) {
-      result.zhihu = true;
+function clean_coinbase(): void {
+  // Check whether coinbase is enabled
+  chrome.storage.sync.get(["coinbase"]).then((result: any) => {
+    if (result.coinbase == null) {
+      result.coinbase = true;
     }
-    if (result.zhihu) {
-      console.log("Zhihu extension running...");
+    if (result.coinbase) {
+      console.log("coinbase extension running...");
       // All tweet containers:
-      let containers = document.querySelectorAll(".Card.TopstoryItem");
+      let containers = document.querySelectorAll("section[class^='InfiniteScroll'] > div[data-element='Box']");
       let tweets: string[] = [];
 
       let filter = Array.prototype.filter;
       let visibleContainers = filter.call(containers, function (container: Element) {
         return checkVisible(container as HTMLElement);
       });
-
+      
+      console.log('visibleContainers', visibleContainers);
       // Only keep tweets that have not been classified before.
       let new_tweets: string[] = [];
       let new_container: Element[] = [];
       for (let i = 0; i < visibleContainers.length; i++) {
-        let author: string, title: string;
-        const contentItem = visibleContainers[i].querySelector(".ContentItem");
-        if (contentItem && contentItem.dataset.zop) {
-          const author_and_title = JSON.parse(contentItem.dataset.zop);
-          author = author_and_title.authorName;
-          title = author_and_title.title;
-        } else {
-          title = contentItem.querySelector(".QuestionItem-title").textContent;
-          author = "";
+        // Find the outermost div with data-testid="tweetText" and get the text content
+        const txt_div = visibleContainers[i].querySelector("p[data-element^='Text']");
+        if (txt_div == null) {
+          console.log("[DISCOVERY] fail to find tweet text for " + visibleContainers[i].textContent.replaceAll("\n", ""));
+          tweets.push("");
+          continue;
         }
-        const main_text = contentItem.querySelector(".RichText.ztext").textContent.replaceAll("\n", "");
-        const tweet = `Author: ${author}, Title: ${title}, Body: ${main_text}`;
-        console.log(tweet);
 
+        const tweet = txt_div.textContent.replaceAll("\n", "");
         tweets.push(tweet);
+
+        // Partially hide tweets that have not been classified yet.
+        const parent = visibleContainers[i].closest("div");
+        if (!classification_cache.has(tweets[i]) && parent) {
+          parent.style.opacity = "0.3";
+        }
+
         // If tweet is new, add it to the list of tweets and add article to filtered_articles and add tweet to cache
         if (!classification_cache.has(tweet)) {
           new_tweets.push(tweet);
-          new_container.push(containers[i]);
-          visibleContainers[i].style.opacity = "0.3";
+          new_container.push(visibleContainers[i]);
         }
       }
 
@@ -213,9 +215,15 @@ setInterval(() => {
   // If the user is on Twitter, run the Twitter extension
   if (window.location.href === "https://twitter.com/home" || window.location.href === "https://www.twitter.com/home") {
     clean_twitter();
-    // If the user is on Zhihu, run the Zhihu extension
-  } else if (window.location.href === "https://www.zhihu.com/" || window.location.href === "https://www.zhihu.com/follow") {
-    clean_zhihu();
+    // If the user is on coinbase, run the coinbase extension
+  } else if (window.location.href === "https://www.coinbase.com/home" || window.location.href === "https://www.coinbase.com/follow") {
+    clean_coinbase();
   }
   inProgress = false;
 }, 3000);
+
+
+
+
+
+
