@@ -68,7 +68,7 @@ function clean_twitter(): void {
 
         // Send the data to the server and log the response to console
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://hiubwe6637gmpslsccd4ofi3de0yaeqa.lambda-url.us-east-2.on.aws/");
+        xhr.open("POST", "https://0ncriuydh1.execute-api.us-west-2.amazonaws.com/recfilter");
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.send(JSON.stringify(data));
         console.log("[Backend]", "Request sent...");
@@ -166,7 +166,7 @@ function clean_coinbase(): void {
 
         // Send the data to the server and log the response to console
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://hiubwe6637gmpslsccd4ofi3de0yaeqa.lambda-url.us-east-2.on.aws/");
+        xhr.open("POST", "https://0ncriuydh1.execute-api.us-west-2.amazonaws.com/recfilter");
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.send(JSON.stringify(data));
         console.log("[Backend]", "Request sent...");
